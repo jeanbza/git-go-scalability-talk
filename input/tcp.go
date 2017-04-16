@@ -1,3 +1,4 @@
+// https://golang.org/pkg/net/
 package main
 
 import (

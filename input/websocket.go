@@ -1,3 +1,4 @@
+// https://github.com/gorilla/websocket/tree/master/examples/echo
 package main
 
 import (
