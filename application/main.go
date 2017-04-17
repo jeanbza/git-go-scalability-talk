@@ -4,6 +4,7 @@ import (
     "github.com/jadekler/git-go-scalability-talk/application/queues"
     "github.com/jadekler/git-go-scalability-talk/application/inputters"
     "github.com/jadekler/git-go-scalability-talk/application/outputters"
+    "sync"
 )
 
 type inputter interface {
@@ -15,7 +16,8 @@ type outputter interface {
 }
 
 func main() {
-    i := listeners.NewWebsocketListener("localhost:8080")
+    //i := listeners.NewWebsocketListener("localhost:8080")
+    i := listeners.NewHttpListener(8080)
     q := queues.NewChanneler()
     o := &outputters.StdoutOutputter{}
     p := NewProcessor(i, q, o)
@@ -23,16 +25,20 @@ func main() {
 }
 
 type Processor struct {
-    i inputter
-    q queues.Queue
-    o outputter
+    i  inputter
+    q  queues.Queue
+    o  outputter
+    wg *sync.WaitGroup
 }
 
 func NewProcessor(i inputter, q queues.Queue, o outputter) *Processor {
-    return &Processor{i: i, q: q, o: o}
+    var wg sync.WaitGroup
+    wg.Add(1)
+    return &Processor{i: i, q: q, o: o, wg: &wg}
 }
 
 func (p *Processor) Start() {
     go p.i.StartAccepting(p.q)
     go p.o.StartOutputting(p.q)
+    p.wg.Wait()
 }

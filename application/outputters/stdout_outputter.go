@@ -13,6 +13,6 @@ func (o *StdoutOutputter) StartOutputting(q queues.Queue) {
     fmt.Println("Starting output")
     for {
         message := q.Dequeue()
-        fmt.Println(string(message))
+        fmt.Println(fmt.Sprintf("Got data: %s", string(message)))
     }
 }
