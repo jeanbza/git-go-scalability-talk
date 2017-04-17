@@ -22,3 +22,5 @@ func (q *ChannelQueue) Dequeue() ([]byte, bool) {
         return nil, false
     }
 }
+
+

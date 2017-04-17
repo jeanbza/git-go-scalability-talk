@@ -32,3 +32,5 @@ func (q *MutexQueue) Dequeue() ([]byte, bool) {
     q.data = q.data[1:len(q.data)]
     return data, true
 }
+
+

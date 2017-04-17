@@ -43,3 +43,5 @@ func (l *WebsocketListener) StartAccepting(q queues.Queue) {
     fmt.Println("Accepting input")
     log.Fatal(http.ListenAndServe(l.address, nil))
 }
+
+
