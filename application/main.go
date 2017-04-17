@@ -18,7 +18,10 @@ type outputter interface {
 func main() {
     //i := listeners.NewWebsocketListener("localhost:8080")
     i := listeners.NewHttpListener(8080)
-    q := queues.NewChanneler()
+
+    //q := queues.NewChanneler()
+    q := queues.NewRingBuffer(10)
+
     o := &outputters.StdoutOutputter{}
     p := NewProcessor(i, q, o)
     p.Start()

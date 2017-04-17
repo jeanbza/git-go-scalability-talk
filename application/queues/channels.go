@@ -14,6 +14,11 @@ func (q *Channeler) Enqueue(data []byte) {
     q.c <- data
 }
 
-func (q *Channeler) Dequeue() []byte {
-    return <- q.c
+func (q *Channeler) Dequeue() ([]byte, bool) {
+    select {
+    case data := <-q.c:
+        return data, true
+    default:
+        return nil, false
+    }
 }
