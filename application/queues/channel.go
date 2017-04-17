@@ -1,20 +1,20 @@
 package queues
 
-type Channeler struct {
+type ChannelQueue struct {
     c chan []byte
 }
 
-func NewChanneler() *Channeler {
-    return &Channeler{
+func NewChannelQueue() *ChannelQueue {
+    return &ChannelQueue{
         c: make(chan []byte, 10),
     }
 }
 
-func (q *Channeler) Enqueue(data []byte) {
+func (q *ChannelQueue) Enqueue(data []byte) {
     q.c <- data
 }
 
-func (q *Channeler) Dequeue() ([]byte, bool) {
+func (q *ChannelQueue) Dequeue() ([]byte, bool) {
     select {
     case data := <-q.c:
         return data, true

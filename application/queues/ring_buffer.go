@@ -2,15 +2,15 @@ package queues
 
 import "sync"
 
-type RingBuffer struct {
+type RingBufferQueue struct {
     buffer       [][]byte
     inputCursor  int
     outputCursor int
     mu           *sync.Mutex
 }
 
-func NewRingBuffer(size int) *RingBuffer {
-    return &RingBuffer{
+func NewRingBufferQueue(size int) *RingBufferQueue {
+    return &RingBufferQueue{
         buffer:       make([][]byte, size),
         inputCursor:  0,
         outputCursor: 0,
@@ -18,7 +18,7 @@ func NewRingBuffer(size int) *RingBuffer {
     }
 }
 
-func (q *RingBuffer) Enqueue(data []byte) {
+func (q *RingBufferQueue) Enqueue(data []byte) {
     q.mu.Lock()
     defer q.mu.Unlock()
 
@@ -30,7 +30,7 @@ func (q *RingBuffer) Enqueue(data []byte) {
     q.inputCursor++
 }
 
-func (q *RingBuffer) Dequeue() ([]byte, bool) {
+func (q *RingBufferQueue) Dequeue() ([]byte, bool) {
     q.mu.Lock()
     defer q.mu.Unlock()
 

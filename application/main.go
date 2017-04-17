@@ -19,8 +19,9 @@ func main() {
     //i := listeners.NewWebsocketListener("localhost:8080")
     i := listeners.NewHttpListener(8080)
 
-    //q := queues.NewChanneler()
-    q := queues.NewRingBuffer(10)
+    //q := queues.NewChannelQueue()
+    q := queues.NewMutexQueue()
+    //q := queues.NewRingBufferQueue(10)
 
     o := &outputters.StdoutOutputter{}
     p := NewProcessor(i, q, o)
