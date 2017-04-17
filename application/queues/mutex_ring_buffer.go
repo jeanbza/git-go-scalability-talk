@@ -1,16 +1,17 @@
+// We could also build a ring buffer using atomics which would be significantly faster
 package queues
 
 import "sync"
 
-type RingBufferQueue struct {
+type MutexRingBufferQueue struct {
     buffer       [][]byte
     inputCursor  int
     outputCursor int
     mu           *sync.Mutex
 }
 
-func NewRingBufferQueue(size int) *RingBufferQueue {
-    return &RingBufferQueue{
+func NewMutexRingBufferQueue(size int) *MutexRingBufferQueue {
+    return &MutexRingBufferQueue{
         buffer:       make([][]byte, size),
         inputCursor:  0,
         outputCursor: 0,
@@ -18,7 +19,7 @@ func NewRingBufferQueue(size int) *RingBufferQueue {
     }
 }
 
-func (q *RingBufferQueue) Enqueue(data []byte) {
+func (q *MutexRingBufferQueue) Enqueue(data []byte) {
     q.mu.Lock()
     defer q.mu.Unlock()
 
@@ -30,7 +31,7 @@ func (q *RingBufferQueue) Enqueue(data []byte) {
     q.inputCursor++
 }
 
-func (q *RingBufferQueue) Dequeue() ([]byte, bool) {
+func (q *MutexRingBufferQueue) Dequeue() ([]byte, bool) {
     q.mu.Lock()
     defer q.mu.Unlock()
 

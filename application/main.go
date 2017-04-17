@@ -21,7 +21,7 @@ func main() {
 
     //q := queues.NewChannelQueue()
     q := queues.NewMutexQueue()
-    //q := queues.NewRingBufferQueue(10)
+    //q := queues.NewMutexRingBufferQueue(10)
 
     o := &outputters.StdoutOutputter{}
     p := NewProcessor(i, q, o)
