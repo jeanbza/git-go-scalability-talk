@@ -11,31 +11,33 @@ import (
     "net/http"
 )
 
-var (
-	l  *listeners.HttpListener = nil
-	wg *sync.WaitGroup         = nil
-	q  queues.Queue            = nil
-	p  int
-)
+var h httpListenerBenchmark = httpListenerBenchmark{}
+
+type httpListenerBenchmark struct {
+    l  *listeners.HttpListener
+    wg *sync.WaitGroup
+    q  queues.Queue
+    p  int
+}
 
 func BenchmarkHttpListener(b *testing.B) {
-	if l == nil {
-		p = benchmark.GetOpenTcpPort()
-		fmt.Println("Starting on port", p)
+	if h.l == nil {
+        h.p = benchmark.GetOpenTcpPort()
+		fmt.Println("Starting on port", h.p)
 
-		wg = &sync.WaitGroup{}
-		q = benchmark.NewWaitingQueue(wg)
+        h.wg = &sync.WaitGroup{}
+        h.q = benchmark.NewWaitingQueue(h.wg)
 
-		l = listeners.NewHttpListener(p)
-		go l.StartAccepting(q)
+        h.l = listeners.NewHttpListener(h.p)
+		go h.l.StartAccepting(h.q)
 	}
 
 	for i := 0; i < b.N; i++ {
-		wg.Add(1)
-		post(p)
+		h.wg.Add(1)
+		post(h.p)
 	}
 
-	wg.Wait()
+    h.wg.Wait()
 }
 
 func post(port int) {

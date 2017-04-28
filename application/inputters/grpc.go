@@ -2,7 +2,6 @@
 package listeners
 
 import (
-    "golang.org/x/net/context"
     pb "google.golang.org/grpc/examples/helloworld/helloworld"
     "github.com/jadekler/git-go-scalability-talk/application/queues"
     "net"
@@ -33,9 +32,3 @@ func (l *GrpcListener) StartAccepting(q queues.Queue) {
         log.Fatalf("failed to serve: %v", err)
     }
 }
-
-func (s *GrpcListener) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
-    return &pb.HelloReply{Message: "Hello " + in.Name}, nil
-}
-
-
