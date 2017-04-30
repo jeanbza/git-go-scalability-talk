@@ -36,7 +36,7 @@ func BenchmarkGrpcListener(b *testing.B) {
 
 		conn, err := grpc.Dial(fmt.Sprintf("localhost:%d", g.p), grpc.WithInsecure())
 		if err != nil {
-			log.Fatalf("did not connect: %v", err)
+			panic(err)
 		}
 		g.c = model.NewGrpcInputterServiceClient(conn)
 	}
@@ -46,7 +46,7 @@ func BenchmarkGrpcListener(b *testing.B) {
 
 		_, err := g.c.MakeRequest(context.Background(), &model.Request{Message: LARGE_MESSAGE})
 		if err != nil {
-			log.Fatalf("could not greet: %v", err)
+			panic(err)
 		}
 	}
 

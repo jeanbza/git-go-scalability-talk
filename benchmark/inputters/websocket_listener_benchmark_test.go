@@ -43,13 +43,13 @@ func BenchmarkWebsocketListener(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		w.wg.Add(1)
-        sendPacket(w.p, w.c)
+        sendPacket(w.c)
 	}
 
 	w.wg.Wait()
 }
 
-func sendPacket(port int, c *websocket.Conn) {
+func sendPacket(c *websocket.Conn) {
     err := c.WriteMessage(websocket.TextMessage, []byte(LARGE_MESSAGE))
     if err != nil {
         panic(err)
