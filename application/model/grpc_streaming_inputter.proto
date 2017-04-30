@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package model;
+
+import "application/model/types.proto";
+
+// The generic service definition.
+service GrpcStreamingInputterService {
+    // Accepts a message but doesn't return anything back
+    rpc MakeRequest (stream Request) returns (Empty) {
+    }
+}

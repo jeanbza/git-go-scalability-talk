@@ -2,17 +2,11 @@ syntax = "proto3";
 
 package model;
 
-message Empty {
-}
+import "application/model/types.proto";
 
 // The generic service definition.
-service GrpcInputterService {
+service GrpcUnaryInputterService {
     // Accepts a message but doesn't return anything back
     rpc MakeRequest (Request) returns (Empty) {
     }
-}
-
-// Some generic request with a message
-message Request {
-    string message = 1;
 }

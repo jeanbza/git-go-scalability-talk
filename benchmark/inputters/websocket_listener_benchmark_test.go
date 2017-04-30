@@ -9,7 +9,6 @@ import (
 	"net/url"
 	"sync"
 	"testing"
-	"time"
 )
 
 var w websocketListenerBenchmark = websocketListenerBenchmark{}

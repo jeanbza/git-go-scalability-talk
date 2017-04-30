@@ -11,19 +11,19 @@ import (
 	"net"
 )
 
-type GrpcListener struct {
+type UnaryGrpcListener struct {
 	port int
 }
 
-func NewGrpcListener(port int) *GrpcListener {
-	return &GrpcListener{port: port}
+func NewUnaryGrpcListener(port int) *UnaryGrpcListener {
+	return &UnaryGrpcListener{port: port}
 }
 
-type grpcServerReplier struct {
+type unaryGrpcServerReplier struct {
 	q queues.Queue
 }
 
-func (l *GrpcListener) StartAccepting(q queues.Queue) {
+func (l *UnaryGrpcListener) StartAccepting(q queues.Queue) {
 	fmt.Printf("Starting gRPC listening on port %d\n", l.port)
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", l.port))
@@ -32,8 +32,8 @@ func (l *GrpcListener) StartAccepting(q queues.Queue) {
 	}
 
 	s := grpc.NewServer()
-	r := grpcServerReplier{q: q}
-	model.RegisterGrpcInputterServiceServer(s, r)
+	r := unaryGrpcServerReplier{q: q}
+	model.RegisterGrpcUnaryInputterServiceServer(s, r)
 
 	reflection.Register(s)
 	if err := s.Serve(lis); err != nil {
@@ -41,7 +41,7 @@ func (l *GrpcListener) StartAccepting(q queues.Queue) {
 	}
 }
 
-func (r grpcServerReplier) MakeRequest(ctx context.Context, in *model.Request) (*model.Empty, error) {
+func (r unaryGrpcServerReplier) MakeRequest(ctx context.Context, in *model.Request) (*model.Empty, error) {
 	r.q.Enqueue([]byte(in.Message))
 	return &model.Empty{}, nil
 }

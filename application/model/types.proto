@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package model;
+
+// Some generic request with a message
+message Request {
+    string message = 1;
+}
+
+message Empty {
+}

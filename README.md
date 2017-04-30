@@ -11,4 +11,4 @@
 
 ## Regenerating protobufs
 
-1. `protoc application/model/grpc_inputter.proto --go_out=plugins=grpc:.`
+1. `protoc application/model/*.proto --go_out=plugins=grpc:.`
