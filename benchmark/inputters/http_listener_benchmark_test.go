@@ -41,6 +41,6 @@ func BenchmarkHttpListener(b *testing.B) {
 }
 
 func post(port int) {
-    body := bytes.NewBufferString("Hello world")
+    body := bytes.NewBufferString(LARGE_MESSAGE)
     http.Post(fmt.Sprintf("http://localhost:%d", port), "application/json", body)
 }

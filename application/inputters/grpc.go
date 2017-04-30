@@ -2,33 +2,45 @@
 package listeners
 
 import (
-    pb "google.golang.org/grpc/examples/helloworld/helloworld"
-    "github.com/jadekler/git-go-scalability-talk/application/queues"
-    "net"
-    "log"
-    "google.golang.org/grpc/reflection"
-    "google.golang.org/grpc"
-    "fmt"
+	"fmt"
+	"github.com/jadekler/git-go-scalability-talk/application/model"
+	"github.com/jadekler/git-go-scalability-talk/application/queues"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
+	"log"
+	"net"
+    "golang.org/x/net/context"
 )
 
 type GrpcListener struct {
-    port int
+	port int
 }
 
 func NewGrpcListener(port int) *GrpcListener {
-    return &GrpcListener{port: port}
+	return &GrpcListener{port: port}
+}
+
+type grpcServerReplier struct {
+	q queues.Queue
 }
 
 func (l *GrpcListener) StartAccepting(q queues.Queue) {
-    lis, err := net.Listen("tcp", fmt.Sprintf(":%d", l.port))
-    if err != nil {
-        log.Fatalf("failed to listen: %v", err)
-    }
-    s := grpc.NewServer()
-    pb.RegisterGreeterServer(s, l)
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", l.port))
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
 
-    reflection.Register(s)
-    if err := s.Serve(lis); err != nil {
-        log.Fatalf("failed to serve: %v", err)
-    }
+	s := grpc.NewServer()
+	r := grpcServerReplier{q: q}
+	model.RegisterGrpcInputterServiceServer(s, r)
+
+	reflection.Register(s)
+	if err := s.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %v", err)
+	}
+}
+
+func (r grpcServerReplier) MakeRequest(ctx context.Context, in *model.Request) (*model.Empty, error) {
+	r.q.Enqueue([]byte(in.Message))
+	return &model.Empty{}, nil
 }

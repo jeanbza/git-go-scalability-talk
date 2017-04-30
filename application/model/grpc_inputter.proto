@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package model;
+
+message Empty {
+}
+
+// The generic service definition.
+service GrpcInputterService {
+    // Accepts a message but doesn't return anything back
+    rpc MakeRequest (Request) returns (Empty) {
+    }
+}
+
+// Some generic request with a message
+message Request {
+    string message = 1;
+}
