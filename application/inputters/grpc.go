@@ -7,7 +7,6 @@ import (
 	"github.com/jadekler/git-go-scalability-talk/application/queues"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	"log"
 	"net"
     "golang.org/x/net/context"
 )
@@ -25,9 +24,11 @@ type grpcServerReplier struct {
 }
 
 func (l *GrpcListener) StartAccepting(q queues.Queue) {
+    fmt.Printf("Starting gRPC listening on port %d\n", l.port)
+
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", l.port))
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		panic(err)
 	}
 
 	s := grpc.NewServer()
@@ -36,7 +37,7 @@ func (l *GrpcListener) StartAccepting(q queues.Queue) {
 
 	reflection.Register(s)
 	if err := s.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
+        panic(err)
 	}
 }
 

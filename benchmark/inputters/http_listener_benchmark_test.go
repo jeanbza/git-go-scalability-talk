@@ -23,7 +23,6 @@ type httpListenerBenchmark struct {
 func BenchmarkHttpListener(b *testing.B) {
 	if h.l == nil {
         h.p = benchmark.GetOpenTcpPort()
-		fmt.Println("Starting on port", h.p)
 
         h.wg = &sync.WaitGroup{}
         h.q = benchmark.NewWaitingQueue(h.wg)

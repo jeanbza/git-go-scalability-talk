@@ -8,7 +8,6 @@ import (
 	"github.com/jadekler/git-go-scalability-talk/application/queues"
 	"github.com/jadekler/git-go-scalability-talk/benchmark"
 	"google.golang.org/grpc"
-	"log"
 	"sync"
 	"testing"
 )
@@ -26,7 +25,6 @@ type grpcListenerBenchmark struct {
 func BenchmarkGrpcListener(b *testing.B) {
 	if g.l == nil {
 		g.p = benchmark.GetOpenTcpPort()
-		fmt.Println("Starting on port", g.p)
 
 		g.wg = &sync.WaitGroup{}
 		g.q = benchmark.NewWaitingQueue(g.wg)

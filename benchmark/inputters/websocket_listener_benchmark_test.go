@@ -24,7 +24,6 @@ type websocketListenerBenchmark struct {
 func BenchmarkWebsocketListener(b *testing.B) {
 	if w.l == nil {
 		w.p = benchmark.GetOpenTcpPort()
-		fmt.Println("Starting on port", w.p)
 
 		w.wg = &sync.WaitGroup{}
 		w.q = benchmark.NewWaitingQueue(w.wg)
@@ -33,7 +32,6 @@ func BenchmarkWebsocketListener(b *testing.B) {
 		go w.l.StartAccepting(w.q)
 
         u := url.URL{Scheme: "ws", Host: fmt.Sprintf("localhost:%d", w.p), Path: "/"}
-        fmt.Println("Connecting to", u.String())
         var err error
         w.c, _, err = websocket.DefaultDialer.Dial(u.String(), nil)
         if err != nil {

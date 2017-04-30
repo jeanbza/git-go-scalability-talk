@@ -5,7 +5,9 @@
 1. Install [protobuf](https://github.com/google/protobuf/releases)
 1. `go get -u github.com/golang/protobuf/{proto,protoc-gen-go}`
 
-## Running
+## Running benchmarks
+
+1. `cd benchmark/inputters && go test -bench .`
 
 ## Regenerating protobufs
 

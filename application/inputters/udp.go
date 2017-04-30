@@ -16,6 +16,8 @@ func NewUdpListener(port int) *UdpListener {
 }
 
 func (l *UdpListener) StartAccepting(q queues.Queue) {
+    fmt.Printf("Starting UDP listening on port %d", l.port)
+
     ServerAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf(":%d", l.port))
     if err != nil {
         fmt.Println(err)
