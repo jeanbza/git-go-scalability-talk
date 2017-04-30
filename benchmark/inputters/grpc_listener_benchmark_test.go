@@ -42,7 +42,7 @@ func BenchmarkGrpcListener(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		g.wg.Add(1)
 
-		_, err := g.c.MakeRequest(context.Background(), &model.Request{Message: LARGE_MESSAGE})
+		_, err := g.c.MakeRequest(context.Background(), &model.Request{Message: benchmark.LARGE_MESSAGE})
 		if err != nil {
 			panic(err)
 		}

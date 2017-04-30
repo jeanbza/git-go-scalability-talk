@@ -20,7 +20,7 @@ func main() {
 	i := listeners.NewHttpListener(8080)
 
 	//q := queues.NewChannelQueue()
-	q := queues.NewMutexQueue()
+	q := queues.NewMutexArrayQueue()
 	//q := queues.NewMutexRingBufferQueue(10)
 
 	o := &outputters.StdoutOutputter{}

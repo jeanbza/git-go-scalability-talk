@@ -2,25 +2,25 @@ package queues
 
 import "sync"
 
-type MutexQueue struct {
+type MutexArrayQueue struct {
 	data [][]byte
 	mu   *sync.Mutex
 }
 
-func NewMutexQueue() *MutexQueue {
-	return &MutexQueue{
+func NewMutexArrayQueue() *MutexArrayQueue {
+	return &MutexArrayQueue{
 		mu: &sync.Mutex{},
 	}
 }
 
-func (q *MutexQueue) Enqueue(data []byte) {
+func (q *MutexArrayQueue) Enqueue(data []byte) {
 	q.mu.Lock()
 	defer q.mu.Unlock()
 
 	q.data = append(q.data, data)
 }
 
-func (q *MutexQueue) Dequeue() ([]byte, bool) {
+func (q *MutexArrayQueue) Dequeue() ([]byte, bool) {
 	q.mu.Lock()
 	defer q.mu.Unlock()
 

@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"sync"
 	"testing"
+	"time"
 )
 
 var w websocketListenerBenchmark = websocketListenerBenchmark{}
@@ -48,7 +49,7 @@ func BenchmarkWebsocketListener(b *testing.B) {
 }
 
 func sendPacket(c *websocket.Conn) {
-	err := c.WriteMessage(websocket.TextMessage, []byte(LARGE_MESSAGE))
+	err := c.WriteMessage(websocket.TextMessage, []byte(benchmark.LARGE_MESSAGE))
 	if err != nil {
 		panic(err)
 	}

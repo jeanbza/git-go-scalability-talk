@@ -1,7 +1,6 @@
 package benchmark
 
 import (
-	"fmt"
 	"github.com/jadekler/git-go-scalability-talk/application/inputters"
 	"github.com/jadekler/git-go-scalability-talk/application/queues"
 	"github.com/jadekler/git-go-scalability-talk/benchmark"
@@ -46,5 +45,5 @@ func sendUdpRequest(port int) {
 	}
 	defer conn.Close()
 
-	conn.Write([]byte(LARGE_MESSAGE))
+	conn.Write([]byte(benchmark.LARGE_MESSAGE))
 }
