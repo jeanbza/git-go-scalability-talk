@@ -16,7 +16,7 @@ type outputter interface {
 }
 
 func main() {
-    //i := listeners.NewWebsocketListener("localhost:8080")
+    //i := listeners.NewWebsocketListener(8080)
     i := listeners.NewHttpListener(8080)
 
     //q := queues.NewChannelQueue()

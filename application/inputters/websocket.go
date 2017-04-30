@@ -11,14 +11,14 @@ import (
 )
 
 type WebsocketListener struct {
-    address string
+    port int
 }
 
 var upgrader = websocket.Upgrader{}
 
-func NewWebsocketListener(address string) *WebsocketListener {
+func NewWebsocketListener(port int) *WebsocketListener {
     return &WebsocketListener{
-        address: address,
+        port: port,
     }
 }
 
@@ -26,7 +26,7 @@ func (l *WebsocketListener) StartAccepting(q queues.Queue) {
     http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
         c, err := upgrader.Upgrade(w, r, nil)
         if err != nil {
-            log.Print("Upgrade error:", err)
+            log.Printf("Upgrade error: %v\n", err)
             return
         }
         log.Print("Upgraded!")
@@ -41,7 +41,7 @@ func (l *WebsocketListener) StartAccepting(q queues.Queue) {
         }
     })
     fmt.Println("Accepting input")
-    log.Fatal(http.ListenAndServe(l.address, nil))
+    log.Fatal(http.ListenAndServe(fmt.Sprintf("localhost:%d", l.port), nil))
 }
 
 
