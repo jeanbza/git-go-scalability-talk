@@ -18,7 +18,7 @@ type websocketListenerBenchmark struct {
 	wg *sync.WaitGroup
 	q  queues.Queue
 	p  int
-    c *websocket.Conn
+	c  *websocket.Conn
 }
 
 func BenchmarkWebsocketListener(b *testing.B) {
@@ -31,25 +31,25 @@ func BenchmarkWebsocketListener(b *testing.B) {
 		w.l = listeners.NewWebsocketListener(w.p)
 		go w.l.StartAccepting(w.q)
 
-        u := url.URL{Scheme: "ws", Host: fmt.Sprintf("localhost:%d", w.p), Path: "/"}
-        var err error
-        w.c, _, err = websocket.DefaultDialer.Dial(u.String(), nil)
-        if err != nil {
-            panic(err)
-        }
+		u := url.URL{Scheme: "ws", Host: fmt.Sprintf("localhost:%d", w.p), Path: "/"}
+		var err error
+		w.c, _, err = websocket.DefaultDialer.Dial(u.String(), nil)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	for i := 0; i < b.N; i++ {
 		w.wg.Add(1)
-        sendPacket(w.c)
+		sendPacket(w.c)
 	}
 
 	w.wg.Wait()
 }
 
 func sendPacket(c *websocket.Conn) {
-    err := c.WriteMessage(websocket.TextMessage, []byte(LARGE_MESSAGE))
-    if err != nil {
-        panic(err)
-    }
+	err := c.WriteMessage(websocket.TextMessage, []byte(LARGE_MESSAGE))
+	if err != nil {
+		panic(err)
+	}
 }

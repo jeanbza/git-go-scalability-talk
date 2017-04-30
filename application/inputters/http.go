@@ -2,33 +2,31 @@
 package listeners
 
 import (
-    "net/http"
-    "fmt"
-    "log"
-    "github.com/jadekler/git-go-scalability-talk/application/queues"
-    "io/ioutil"
+	"fmt"
+	"github.com/jadekler/git-go-scalability-talk/application/queues"
+	"io/ioutil"
+	"log"
+	"net/http"
 )
 
 type HttpListener struct {
-    port int
+	port int
 }
 
 func NewHttpListener(port int) *HttpListener {
-    return &HttpListener{port: port}
+	return &HttpListener{port: port}
 }
 
 func (l *HttpListener) StartAccepting(q queues.Queue) {
-    fmt.Printf("Starting HTTP listening on port %d", l.port)
+	fmt.Printf("Starting HTTP listening on port %d", l.port)
 
-    http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-        body, err := ioutil.ReadAll(r.Body)
-        if err != nil {
-            log.Fatal(err)
-        }
-        q.Enqueue(body)
-    })
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			log.Fatal(err)
+		}
+		q.Enqueue(body)
+	})
 
-    log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", l.port), nil))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", l.port), nil))
 }
-
-

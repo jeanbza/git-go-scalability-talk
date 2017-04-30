@@ -1,7 +1,7 @@
 package queues
 
 import (
-    "testing"
+	"testing"
 )
 
 func BenchmarkChannels(b *testing.B) {

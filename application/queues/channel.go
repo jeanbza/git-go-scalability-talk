@@ -1,26 +1,24 @@
 package queues
 
 type ChannelQueue struct {
-    c chan []byte
+	c chan []byte
 }
 
 func NewChannelQueue() *ChannelQueue {
-    return &ChannelQueue{
-        c: make(chan []byte, 10),
-    }
+	return &ChannelQueue{
+		c: make(chan []byte, 10),
+	}
 }
 
 func (q *ChannelQueue) Enqueue(data []byte) {
-    q.c <- data
+	q.c <- data
 }
 
 func (q *ChannelQueue) Dequeue() ([]byte, bool) {
-    select {
-    case data := <-q.c:
-        return data, true
-    default:
-        return nil, false
-    }
+	select {
+	case data := <-q.c:
+		return data, true
+	default:
+		return nil, false
+	}
 }
-
-
