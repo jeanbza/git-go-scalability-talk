@@ -48,7 +48,7 @@ func BenchmarkWebsocketListener(b *testing.B) {
 }
 
 func sendPacket(c *websocket.Conn) {
-	err := c.WriteMessage(websocket.TextMessage, []byte(benchmark.LARGE_MESSAGE))
+	err := c.WriteMessage(websocket.TextMessage, []byte(benchmark.VERY_LARGE_MESSAGE))
 	if err != nil {
 		panic(err)
 	}

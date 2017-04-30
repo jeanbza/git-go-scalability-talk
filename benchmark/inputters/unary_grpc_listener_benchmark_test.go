@@ -42,7 +42,7 @@ func BenchmarkUnaryGrpcListener(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		ug.wg.Add(1)
 
-		_, err := ug.c.MakeRequest(context.Background(), &model.Request{Message: benchmark.LARGE_MESSAGE})
+		_, err := ug.c.MakeRequest(context.Background(), &model.Request{Message: benchmark.VERY_LARGE_MESSAGE})
 		if err != nil {
 			panic(err)
 		}

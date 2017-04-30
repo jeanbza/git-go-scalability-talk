@@ -45,5 +45,5 @@ func sendUdpRequest(port int) {
 	}
 	defer conn.Close()
 
-	conn.Write([]byte(benchmark.LARGE_MESSAGE))
+	conn.Write([]byte(benchmark.SMALL_MESSAGE))
 }
