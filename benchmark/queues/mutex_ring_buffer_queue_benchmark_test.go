@@ -23,7 +23,7 @@ func BenchmarkMutexRingBufferQueue(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
         mr.wg.Add(1)
-        mr.q.Enqueue([]byte(benchmark.LARGE_MESSAGE))
+        mr.q.Enqueue([]byte(benchmark.VERY_LARGE_MESSAGE))
     }
 
 	mr.wg.Wait()

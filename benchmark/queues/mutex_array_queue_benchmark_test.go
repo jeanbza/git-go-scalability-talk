@@ -23,7 +23,7 @@ func BenchmarkMutexArrayQueue(b *testing.B) {
 
     for i := 0; i < b.N; i++ {
         ma.wg.Add(1)
-        ma.q.Enqueue([]byte(benchmark.LARGE_MESSAGE))
+        ma.q.Enqueue([]byte(benchmark.VERY_LARGE_MESSAGE))
     }
 
     ma.wg.Wait()

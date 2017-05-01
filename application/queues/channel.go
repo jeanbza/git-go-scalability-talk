@@ -6,7 +6,7 @@ type ChannelQueue struct {
 
 func NewChannelQueue() *ChannelQueue {
 	return &ChannelQueue{
-		c: make(chan []byte, 10),
+		c: make(chan []byte, 1000),
 	}
 }
 

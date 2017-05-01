@@ -23,7 +23,7 @@ func BenchmarkChannelQueue(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
         c.wg.Add(1)
-        c.q.Enqueue([]byte(benchmark.LARGE_MESSAGE))
+        c.q.Enqueue([]byte(benchmark.VERY_LARGE_MESSAGE))
     }
 
 	c.wg.Wait()
