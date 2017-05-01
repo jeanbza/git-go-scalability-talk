@@ -1,6 +1,7 @@
 package benchmark
 
 import (
+	"fmt"
 	"github.com/jadekler/git-go-scalability-talk/application/inputters"
 	"github.com/jadekler/git-go-scalability-talk/application/queues"
 	"github.com/jadekler/git-go-scalability-talk/benchmark"
@@ -38,12 +39,16 @@ func BenchmarkUdpListener(b *testing.B) {
 }
 
 func sendUdpRequest(port int) {
-	raddr := &net.UDPAddr{IP: []byte{byte(127), byte(0), byte(0), byte(1)}, Port: port, Zone: "eth0"}
-	conn, err := net.DialUDP("udp", nil, raddr)
+	raddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("127.0.0.1:%d", port))
+	laddr, err := net.ResolveUDPAddr("udp", "127.0.0.1:0")
+	if err != nil {
+		panic(err)
+	}
+	conn, err := net.DialUDP("udp", laddr, raddr)
 	if err != nil {
 		panic(err)
 	}
 	defer conn.Close()
 
-	conn.Write([]byte(benchmark.SMALL_MESSAGE))
+	conn.Write([]byte(benchmark.LARGE_MESSAGE))
 }

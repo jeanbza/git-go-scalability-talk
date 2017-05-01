@@ -29,7 +29,7 @@ func (l *UdpListener) StartAccepting(q queues.Queue) {
 	}
 	defer ServerConn.Close()
 
-	buf := make([]byte, 1024)
+	buf := make([]byte, 10000)
 
 	for {
 		n, _, err := ServerConn.ReadFromUDP(buf)
