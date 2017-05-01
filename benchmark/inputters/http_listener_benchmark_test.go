@@ -39,7 +39,28 @@ func BenchmarkHttpListener(b *testing.B) {
 	h.wg.Wait()
 }
 
+func BenchmarkHttpListenerParallel(b *testing.B) {
+	if h.l == nil {
+		h.p = benchmark.GetOpenTcpPort()
+
+		h.wg = &sync.WaitGroup{}
+		h.q = benchmark.NewWaitingQueue(h.wg)
+
+		h.l = listeners.NewHttpListener(h.p)
+		go h.l.StartAccepting(h.q)
+	}
+
+    b.RunParallel(func(pb *testing.PB) {
+        for pb.Next() {
+            h.wg.Add(1)
+            post(h.p)
+        }
+    })
+
+	h.wg.Wait()
+}
+
 func post(port int) {
-	body := bytes.NewBufferString(benchmark.VERY_LARGE_MESSAGE)
+	body := bytes.NewBufferString(benchmark.SMALL_MESSAGE)
 	http.Post(fmt.Sprintf("http://localhost:%d", port), "application/json", body)
 }

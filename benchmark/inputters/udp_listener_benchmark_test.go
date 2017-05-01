@@ -38,6 +38,28 @@ func BenchmarkUdpListener(b *testing.B) {
 	u.wg.Wait()
 }
 
+func BenchmarkUdpListenerParallel(b *testing.B) {
+    if u.l == nil {
+        u.p = benchmark.GetOpenTcpPort()
+
+        u.wg = &sync.WaitGroup{}
+        u.q = benchmark.NewWaitingQueue(u.wg)
+
+        u.l = listeners.NewUdpListener(u.p)
+        go u.l.StartAccepting(u.q)
+    }
+
+    b.RunParallel(func(pb *testing.PB) {
+        for pb.Next() {
+            u.wg.Add(1)
+            sendUdpRequest(u.p)
+        }
+    })
+
+    fmt.Println("Waiting")
+    u.wg.Wait()
+}
+
 func sendUdpRequest(port int) {
 	raddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("127.0.0.1:%d", port))
 	laddr, err := net.ResolveUDPAddr("udp", "127.0.0.1:0")
@@ -50,5 +72,5 @@ func sendUdpRequest(port int) {
 	}
 	defer conn.Close()
 
-	conn.Write([]byte(benchmark.LARGE_MESSAGE))
+	conn.Write([]byte(benchmark.MEDIUM_MESSAGE))
 }

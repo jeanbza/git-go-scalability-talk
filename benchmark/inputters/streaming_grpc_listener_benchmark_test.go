@@ -49,9 +49,45 @@ func BenchmarkGrpcListener(b *testing.B) {
 
 		err := sg.s.Send(&model.Request{Message: benchmark.VERY_LARGE_MESSAGE})
 		if err != nil {
-            panic(err)
+			panic(err)
 		}
 	}
+
+	sg.wg.Wait()
+}
+
+func BenchmarkGrpcListenerParallel(b *testing.B) {
+	if sg.l == nil {
+		sg.p = benchmark.GetOpenTcpPort()
+
+		sg.wg = &sync.WaitGroup{}
+		sg.q = benchmark.NewWaitingQueue(sg.wg)
+
+		sg.l = listeners.NewStreamingGrpcListener(sg.p)
+		go sg.l.StartAccepting(sg.q)
+	}
+
+	b.RunParallel(func(pb *testing.PB) {
+		conn, err := grpc.Dial(fmt.Sprintf("localhost:%d", sg.p), grpc.WithInsecure())
+		if err != nil {
+			panic(err)
+		}
+		client := model.NewGrpcStreamingInputterServiceClient(conn)
+
+		stream, err := client.MakeRequest(context.Background())
+		if err != nil {
+			panic(err)
+		}
+		s := stream
+
+		for pb.Next() {
+            sg.wg.Add(1)
+			err := s.Send(&model.Request{Message: benchmark.VERY_LARGE_MESSAGE})
+			if err != nil {
+				panic(err)
+			}
+		}
+	})
 
 	sg.wg.Wait()
 }

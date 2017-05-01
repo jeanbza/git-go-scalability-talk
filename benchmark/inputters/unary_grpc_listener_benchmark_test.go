@@ -50,3 +50,34 @@ func BenchmarkUnaryGrpcListener(b *testing.B) {
 
 	ug.wg.Wait()
 }
+
+func BenchmarkUnaryGrpcListenerParallel(b *testing.B) {
+	if ug.l == nil {
+		ug.p = benchmark.GetOpenTcpPort()
+
+		ug.wg = &sync.WaitGroup{}
+		ug.q = benchmark.NewWaitingQueue(ug.wg)
+
+		ug.l = listeners.NewUnaryGrpcListener(ug.p)
+		go ug.l.StartAccepting(ug.q)
+
+		conn, err := grpc.Dial(fmt.Sprintf("localhost:%d", ug.p), grpc.WithInsecure())
+		if err != nil {
+			panic(err)
+		}
+		ug.c = model.NewGrpcUnaryInputterServiceClient(conn)
+	}
+
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			ug.wg.Add(1)
+
+			_, err := ug.c.MakeRequest(context.Background(), &model.Request{Message: benchmark.SMALL_MESSAGE})
+			if err != nil {
+				panic(err)
+			}
+		}
+	})
+
+	ug.wg.Wait()
+}
