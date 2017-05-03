@@ -1,3 +1,6 @@
+// Based on: github.com/cloudfoundry/diodes/one_to_one.go
+// Note that this solution has some issues as it approaches math.MaxInt64 related to the size
+// modding, but it's probably not enough to care about
 package queues
 
 import (
