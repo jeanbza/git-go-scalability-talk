@@ -7,7 +7,7 @@
 
 ## Running benchmarks
 
-1. `cd benchmark/inputters && go test -bench .`
+1. `cd benchmark && go test ./... -bench .`
 
 ## Regenerating protobufs
 
