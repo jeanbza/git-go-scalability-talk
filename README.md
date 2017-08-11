@@ -1,5 +1,6 @@
 # git-go-scalability-talk
 
+
 ## Installation
 
 1. Install [protobuf](https://github.com/google/protobuf/releases)
