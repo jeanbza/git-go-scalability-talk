@@ -1,15 +1,20 @@
 # git-go-scalability-talk
 
-
 ## Installation
 
-1. Install [protobuf](https://github.com/google/protobuf/releases)
-1. `go get -u github.com/golang/protobuf/{proto,protoc-gen-go}`
+1. Install [protoc](https://github.com/google/protobuf/releases) to compile protobufs
+1. Install deps
+
+    ```
+    go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
+    go get github.com/gorilla/websocket
+    go get golang.org/x/net/context
+    go get google.golang.org/grpc
+    ```
+
+1. `protoc application/model/*.proto --go_out=plugins=grpc:.`
 
 ## Running benchmarks
 
-1. `cd benchmark && go test ./... -bench .`
+1. `go test ./... -bench .`
 
-## Regenerating protobufs
-
-1. `protoc application/model/*.proto --go_out=plugins=grpc:.`
