@@ -29,15 +29,14 @@ func (l *WebsocketListener) StartAccepting(q queues.Queue) {
 	m.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		c, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
-			//log.Printf("Upgrade error: %v\n", err)
 			return
 		}
-		//log.Print("Upgraded!")
+
 		defer c.Close()
+
 		for {
 			_, message, err := c.ReadMessage()
 			if err != nil {
-				//log.Println("read:", err)
 				break
 			}
 			q.Enqueue(message)

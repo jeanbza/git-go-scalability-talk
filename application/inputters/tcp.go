@@ -31,8 +31,6 @@ func (l *TcpListener) StartAccepting(q queues.Queue) {
 			panic(err)
 		}
 
-		fmt.Println("Got a connection")
-
 		go readFromConn(conn, q)
 	}
 }
@@ -48,7 +46,6 @@ func readFromConn(c net.Conn, q queues.Queue) {
 
 		if err != nil {
 			if err == io.EOF {
-				fmt.Println("Connection ended!")
 				c.Close()
 				return
 			}
