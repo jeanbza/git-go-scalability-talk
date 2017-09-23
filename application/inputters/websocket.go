@@ -23,7 +23,7 @@ func NewWebsocketListener(port int) *WebsocketListener {
 }
 
 func (l *WebsocketListener) StartAccepting(q queues.Queue) {
-	fmt.Printf("Starting websocket listening on port %d", l.port)
+	fmt.Printf("Starting websocket listening on port %d\n", l.port)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		c, err := upgrader.Upgrade(w, r, nil)

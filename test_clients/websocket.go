@@ -9,7 +9,7 @@ import (
 // Sends a single message over websocket
 func main() {
 	u := url.URL{Scheme: "ws", Host: "localhost:8000", Path: "/echo"}
-	log.Printf("connecting to %s", u.String())
+	log.Printf("Connecting to %s\n", u.String())
 
 	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
 	if err != nil {
