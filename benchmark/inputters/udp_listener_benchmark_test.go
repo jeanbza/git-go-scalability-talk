@@ -56,13 +56,13 @@ func BenchmarkUdpListenerParallel(b *testing.B) {
         }
     })
 
-    fmt.Println("Waiting")
+    b.Log("Waiting")
     u.wg.Wait()
 }
 
 func sendUdpRequest(port int) {
-	raddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("127.0.0.1:%d", port))
-	laddr, err := net.ResolveUDPAddr("udp", "127.0.0.1:0")
+	raddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("localhost:%d", port))
+	laddr, err := net.ResolveUDPAddr("udp", "localhost:0")
 	if err != nil {
 		panic(err)
 	}
