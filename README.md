@@ -12,7 +12,7 @@
     go get google.golang.org/grpc
     ```
 
-1. `protoc application/model/*.proto --go_out=plugins=grpc:.`
+1. (optional) Regenerate protobuf clients+models `protoc application/model/*.proto --go_out=plugins=grpc:.`
 
 ## Running benchmarks
 
