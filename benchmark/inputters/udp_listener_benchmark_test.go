@@ -56,7 +56,6 @@ func BenchmarkUdpListenerParallel(b *testing.B) {
         }
     })
 
-    b.Log("Waiting")
     u.wg.Wait()
 }
 
