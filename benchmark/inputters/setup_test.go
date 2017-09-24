@@ -77,7 +77,7 @@ type websocketListenerBenchmark struct {
 }
 
 var (
-	msg string
+	msg string                         = benchmark.VERY_LARGE_MESSAGE
 	h   httpListenerBenchmark          = httpListenerBenchmark{}
 	t   tcpListenerBenchmark           = tcpListenerBenchmark{}
 	sg  streamingGrpcListenerBenchmark = streamingGrpcListenerBenchmark{}
@@ -89,8 +89,6 @@ var (
 
 func TestMain(m *testing.M) {
 	fmt.Println("Setup!")
-
-	msg = benchmark.SMALL_MESSAGE
 
 	setupHttp()
 	setupTcp()
