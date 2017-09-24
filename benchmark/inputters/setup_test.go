@@ -1,22 +1,23 @@
 package benchmark
 
 import (
-	"os"
-	"github.com/jadekler/git-go-scalability-talk/application/inputters"
-	"github.com/jadekler/git-go-scalability-talk/benchmark"
-	"sync"
-	"fmt"
-	"testing"
-	"github.com/jadekler/git-go-scalability-talk/application/queues"
-	"net"
-	"github.com/jadekler/git-go-scalability-talk/application/model"
-	"google.golang.org/grpc"
 	"context"
+	"fmt"
 	"github.com/gorilla/websocket"
+	"github.com/jadekler/git-go-scalability-talk/application/inputters"
+	"github.com/jadekler/git-go-scalability-talk/application/model"
+	"github.com/jadekler/git-go-scalability-talk/application/queues"
+	"github.com/jadekler/git-go-scalability-talk/benchmark"
+	"google.golang.org/grpc"
+	"net"
 	"net/url"
+	"os"
+	"sync"
+	"testing"
 )
 
 var h httpListenerBenchmark = httpListenerBenchmark{}
+
 type httpListenerBenchmark struct {
 	l  *listeners.HttpListener
 	wg *sync.WaitGroup
@@ -25,6 +26,7 @@ type httpListenerBenchmark struct {
 }
 
 var t tcpListenerBenchmark = tcpListenerBenchmark{}
+
 type tcpListenerBenchmark struct {
 	l    *listeners.TcpListener
 	wg   *sync.WaitGroup
@@ -34,6 +36,7 @@ type tcpListenerBenchmark struct {
 }
 
 var sg streamingGrpcListenerBenchmark = streamingGrpcListenerBenchmark{}
+
 type streamingGrpcListenerBenchmark struct {
 	l  *listeners.StreamingGrpcListener
 	wg *sync.WaitGroup
@@ -43,14 +46,18 @@ type streamingGrpcListenerBenchmark struct {
 }
 
 var u udpListenerBenchmark = udpListenerBenchmark{}
+
 type udpListenerBenchmark struct {
-	l  *listeners.UdpListener
-	wg *sync.WaitGroup
-	q  queues.Queue
-	p  int
+	l     *listeners.UdpListener
+	wg    *sync.WaitGroup
+	q     queues.Queue
+	p     int
+	raddr *net.UDPAddr
+	laddr *net.UDPAddr
 }
 
 var ug unaryGrpcListenerBenchmark = unaryGrpcListenerBenchmark{}
+
 type unaryGrpcListenerBenchmark struct {
 	l  *listeners.UnaryGrpcListener
 	wg *sync.WaitGroup
@@ -60,6 +67,7 @@ type unaryGrpcListenerBenchmark struct {
 }
 
 var w websocketListenerBenchmark = websocketListenerBenchmark{}
+
 type websocketListenerBenchmark struct {
 	l  *listeners.WebsocketListener
 	wg *sync.WaitGroup
@@ -127,6 +135,19 @@ func setupUdp() {
 
 	u.l = listeners.NewUdpListener(u.p)
 	go u.l.StartAccepting(u.q)
+
+	raddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("localhost:%d", u.p))
+	if err != nil {
+		panic(err)
+	}
+
+	laddr, err := net.ResolveUDPAddr("udp", "localhost:0")
+	if err != nil {
+		panic(err)
+	}
+
+	u.raddr = raddr
+	u.laddr = laddr
 }
 
 func setupUnaryGrpc() {

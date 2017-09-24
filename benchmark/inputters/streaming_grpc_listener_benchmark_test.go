@@ -13,7 +13,7 @@ func BenchmarkStreamingGrpcListener(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		sg.wg.Add(1)
 
-		err := sg.s.Send(&model.Request{Message: benchmark.VERY_LARGE_MESSAGE})
+		err := sg.s.Send(&model.Request{Message: benchmark.SMALL_MESSAGE})
 		if err != nil {
 			panic(err)
 		}
@@ -38,7 +38,7 @@ func BenchmarkStreamingGrpcListenerParallel(b *testing.B) {
 
 		for pb.Next() {
             sg.wg.Add(1)
-			err := s.Send(&model.Request{Message: benchmark.VERY_LARGE_MESSAGE})
+			err := s.Send(&model.Request{Message: benchmark.SMALL_MESSAGE})
 			if err != nil {
 				panic(err)
 			}

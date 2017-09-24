@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func BenchmarkTcpListener(b *testing.B) {
+func BenchmarkStreamingTcpListener(b *testing.B) {
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
 			t.wg.Add(1)
@@ -20,7 +20,7 @@ func BenchmarkTcpListener(b *testing.B) {
 	t.wg.Wait()
 }
 
-func BenchmarkTcpListenerParallel(b *testing.B) {
+func BenchmarkStreamingTcpListenerParallel(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		t.wg.Add(1)
 		streamTcpItem(t.conn)

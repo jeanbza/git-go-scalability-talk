@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func BenchmarkWebsocketListener(b *testing.B) {
+func BenchmarkStreamingWebsocketListener(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		w.wg.Add(1)
 		sendPacket(w.c)
@@ -17,7 +17,7 @@ func BenchmarkWebsocketListener(b *testing.B) {
 	w.wg.Wait()
 }
 
-func BenchmarkWebsocketListenerParallel(b *testing.B) {
+func BenchmarkStreamingWebsocketListenerParallel(b *testing.B) {
 	b.RunParallel(func(pb *testing.PB) {
         u := url.URL{Scheme: "ws", Host: fmt.Sprintf("localhost:%d", w.p), Path: "/"}
         c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
@@ -35,7 +35,7 @@ func BenchmarkWebsocketListenerParallel(b *testing.B) {
 }
 
 func sendPacket(c *websocket.Conn) {
-	err := c.WriteMessage(websocket.TextMessage, []byte(benchmark.VERY_LARGE_MESSAGE))
+	err := c.WriteMessage(websocket.TextMessage, []byte(benchmark.SMALL_MESSAGE))
 	if err != nil {
 		panic(err)
 	}
