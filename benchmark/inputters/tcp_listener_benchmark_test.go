@@ -2,40 +2,12 @@ package benchmark
 
 import (
 	"fmt"
-	"github.com/jadekler/git-go-scalability-talk/application/inputters"
-	"github.com/jadekler/git-go-scalability-talk/application/queues"
 	"github.com/jadekler/git-go-scalability-talk/benchmark"
 	"net"
-	"os"
 	"strings"
-	"sync"
 	"testing"
 	"time"
 )
-
-var t tcpListenerBenchmark = tcpListenerBenchmark{}
-
-type tcpListenerBenchmark struct {
-	l    *listeners.TcpListener
-	wg   *sync.WaitGroup
-	q    queues.Queue
-	p    int
-	conn net.Conn
-}
-
-func TestMain(m *testing.M) {
-	fmt.Println("Setup!")
-	t.p = benchmark.GetOpenTcpPort()
-
-	t.wg = &sync.WaitGroup{}
-	t.q = benchmark.NewWaitingQueue(t.wg)
-
-	t.l = listeners.NewTcpListener(t.p)
-	go t.l.StartAccepting(t.q)
-	t.conn = openTcpConn(t.p)
-
-	os.Exit(m.Run())
-}
 
 func BenchmarkTcpListener(b *testing.B) {
 	b.RunParallel(func(pb *testing.PB) {
