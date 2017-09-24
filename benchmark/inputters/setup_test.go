@@ -18,16 +18,12 @@ import (
 	"time"
 )
 
-var h httpListenerBenchmark = httpListenerBenchmark{}
-
 type httpListenerBenchmark struct {
 	l  *listeners.HttpListener
 	wg *sync.WaitGroup
 	q  queues.Queue
 	p  int
 }
-
-var t tcpListenerBenchmark = tcpListenerBenchmark{}
 
 type tcpListenerBenchmark struct {
 	l    *listeners.TcpListener
@@ -37,8 +33,6 @@ type tcpListenerBenchmark struct {
 	conn net.Conn
 }
 
-var sg streamingGrpcListenerBenchmark = streamingGrpcListenerBenchmark{}
-
 type streamingGrpcListenerBenchmark struct {
 	l  *listeners.StreamingGrpcListener
 	wg *sync.WaitGroup
@@ -46,8 +40,6 @@ type streamingGrpcListenerBenchmark struct {
 	p  int
 	s  model.GrpcStreamingInputterService_MakeRequestClient
 }
-
-var su streamingUdpListenerBenchmark = streamingUdpListenerBenchmark{}
 
 type streamingUdpListenerBenchmark struct {
 	l    *listeners.UdpListener
@@ -57,8 +49,6 @@ type streamingUdpListenerBenchmark struct {
 	p    int
 	conn *net.UDPConn
 }
-
-var uu unaryUdpListenerBenchmark = unaryUdpListenerBenchmark{}
 
 type unaryUdpListenerBenchmark struct {
 	l     *listeners.UdpListener
@@ -70,8 +60,6 @@ type unaryUdpListenerBenchmark struct {
 	raddr *net.UDPAddr
 }
 
-var ug unaryGrpcListenerBenchmark = unaryGrpcListenerBenchmark{}
-
 type unaryGrpcListenerBenchmark struct {
 	l  *listeners.UnaryGrpcListener
 	wg *sync.WaitGroup
@@ -79,8 +67,6 @@ type unaryGrpcListenerBenchmark struct {
 	p  int
 	c  model.GrpcUnaryInputterServiceClient
 }
-
-var w websocketListenerBenchmark = websocketListenerBenchmark{}
 
 type websocketListenerBenchmark struct {
 	l  *listeners.WebsocketListener
@@ -90,8 +76,21 @@ type websocketListenerBenchmark struct {
 	c  *websocket.Conn
 }
 
+var (
+	msg string
+	h   httpListenerBenchmark          = httpListenerBenchmark{}
+	t   tcpListenerBenchmark           = tcpListenerBenchmark{}
+	sg  streamingGrpcListenerBenchmark = streamingGrpcListenerBenchmark{}
+	su  streamingUdpListenerBenchmark  = streamingUdpListenerBenchmark{}
+	uu  unaryUdpListenerBenchmark      = unaryUdpListenerBenchmark{}
+	ug  unaryGrpcListenerBenchmark     = unaryGrpcListenerBenchmark{}
+	w   websocketListenerBenchmark     = websocketListenerBenchmark{}
+)
+
 func TestMain(m *testing.M) {
 	fmt.Println("Setup!")
+
+	msg = benchmark.SMALL_MESSAGE
 
 	setupHttp()
 	setupTcp()

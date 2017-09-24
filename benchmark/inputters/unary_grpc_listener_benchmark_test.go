@@ -3,7 +3,6 @@ package benchmark
 import (
 	"context"
 	"github.com/jadekler/git-go-scalability-talk/application/model"
-	"github.com/jadekler/git-go-scalability-talk/benchmark"
 	"testing"
 )
 
@@ -11,7 +10,7 @@ func BenchmarkUnaryGrpcListener(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		ug.wg.Add(1)
 
-		_, err := ug.c.MakeRequest(context.Background(), &model.Request{Message: benchmark.SMALL_MESSAGE})
+		_, err := ug.c.MakeRequest(context.Background(), &model.Request{Message: msg})
 		if err != nil {
 			panic(err)
 		}
@@ -25,7 +24,7 @@ func BenchmarkUnaryGrpcListenerParallel(b *testing.B) {
 		for pb.Next() {
 			ug.wg.Add(1)
 
-			_, err := ug.c.MakeRequest(context.Background(), &model.Request{Message: benchmark.SMALL_MESSAGE})
+			_, err := ug.c.MakeRequest(context.Background(), &model.Request{Message: msg})
 			if err != nil {
 				panic(err)
 			}

@@ -2,11 +2,11 @@
 package listeners
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/jadekler/git-go-scalability-talk/application/queues"
 	"io"
 	"net"
-	"bytes"
 )
 
 type TcpListener struct {
@@ -57,7 +57,7 @@ func readFromConn(c net.Conn, q queues.Queue) {
 	}
 }
 
-func processBuffer(add chan([]byte), q queues.Queue) {
+func processBuffer(add chan ([]byte), q queues.Queue) {
 	b := bytes.NewBuffer([]byte{})
 
 	for {

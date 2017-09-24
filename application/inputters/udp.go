@@ -8,7 +8,7 @@ import (
 )
 
 type UdpListener struct {
-	port     int
+	port int
 }
 
 func NewUdpListener(port int) *UdpListener {

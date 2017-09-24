@@ -3,11 +3,10 @@ package benchmark
 import (
 	"bytes"
 	"fmt"
-	"github.com/jadekler/git-go-scalability-talk/benchmark"
 	"net/http"
-	"testing"
 	"strings"
 	"sync"
+	"testing"
 )
 
 func BenchmarkUnaryHttpListener(b *testing.B) {
@@ -19,11 +18,11 @@ func BenchmarkUnaryHttpListener(b *testing.B) {
 }
 
 func BenchmarkUnaryHttpListenerParallel(b *testing.B) {
-    b.RunParallel(func(pb *testing.PB) {
-        for pb.Next() {
-            post(h.p, h.wg)
-        }
-    })
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			post(h.p, h.wg)
+		}
+	})
 
 	h.wg.Wait()
 }
@@ -31,7 +30,7 @@ func BenchmarkUnaryHttpListenerParallel(b *testing.B) {
 func post(port int, wg *sync.WaitGroup) {
 	wg.Add(1)
 
-	body := bytes.NewBufferString(benchmark.SMALL_MESSAGE)
+	body := bytes.NewBufferString(msg)
 	_, err := http.Post(fmt.Sprintf("http://localhost:%d", port), "application/json", body)
 	if err != nil {
 		if strings.Contains(err.Error(), "read: connection reset by peer") {

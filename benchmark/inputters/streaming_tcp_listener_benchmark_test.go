@@ -1,7 +1,6 @@
 package benchmark
 
 import (
-	"github.com/jadekler/git-go-scalability-talk/benchmark"
 	"net"
 	"testing"
 )
@@ -27,7 +26,7 @@ func BenchmarkStreamingTcpListenerParallel(b *testing.B) {
 }
 
 func streamTcpItem(c net.Conn) {
-	_, err := c.Write([]byte(benchmark.SMALL_MESSAGE))
+	_, err := c.Write([]byte(msg))
 	if err != nil {
 		panic(err)
 	}

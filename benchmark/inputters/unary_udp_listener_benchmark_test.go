@@ -1,7 +1,6 @@
 package benchmark
 
 import (
-	"github.com/jadekler/git-go-scalability-talk/benchmark"
 	"net"
 	"testing"
 )
@@ -11,17 +10,17 @@ func BenchmarkUnaryUdpListener(b *testing.B) {
 		sendUdpRequest(uu.laddr, uu.raddr)
 	}
 
-	<- uu.t.C
+	<-uu.t.C
 }
 
 func BenchmarkUnaryUdpListenerParallel(b *testing.B) {
-    b.RunParallel(func(pb *testing.PB) {
-        for pb.Next() {
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
 			sendUdpRequest(uu.laddr, uu.raddr)
-        }
-    })
+		}
+	})
 
-	<- uu.t.C
+	<-uu.t.C
 }
 
 func sendUdpRequest(laddr, raddr *net.UDPAddr) {
@@ -36,5 +35,5 @@ func sendUdpRequest(laddr, raddr *net.UDPAddr) {
 		}
 	}()
 
-	conn.Write([]byte(benchmark.SMALL_MESSAGE))
+	conn.Write([]byte(msg))
 }
