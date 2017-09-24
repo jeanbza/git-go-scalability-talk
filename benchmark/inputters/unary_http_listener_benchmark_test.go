@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func BenchmarkHttpListener(b *testing.B) {
+func BenchmarkUnaryHttpListener(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		h.wg.Add(1)
 		post(h.p)
@@ -17,7 +17,7 @@ func BenchmarkHttpListener(b *testing.B) {
 	h.wg.Wait()
 }
 
-func BenchmarkHttpListenerParallel(b *testing.B) {
+func BenchmarkUnaryHttpListenerParallel(b *testing.B) {
     b.RunParallel(func(pb *testing.PB) {
         for pb.Next() {
             h.wg.Add(1)
