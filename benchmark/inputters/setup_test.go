@@ -12,8 +12,10 @@ import (
 	"net"
 	"net/url"
 	"os"
+	"strings"
 	"sync"
 	"testing"
+	"time"
 )
 
 var h httpListenerBenchmark = httpListenerBenchmark{}
@@ -48,12 +50,12 @@ type streamingGrpcListenerBenchmark struct {
 var u udpListenerBenchmark = udpListenerBenchmark{}
 
 type udpListenerBenchmark struct {
-	l     *listeners.UdpListener
-	wg    *sync.WaitGroup
-	q     queues.Queue
-	p     int
-	raddr *net.UDPAddr
-	laddr *net.UDPAddr
+	l    *listeners.UdpListener
+	wg   *sync.WaitGroup
+	t    *time.Timer
+	q    queues.Queue
+	p    int
+	conn *net.UDPConn
 }
 
 var ug unaryGrpcListenerBenchmark = unaryGrpcListenerBenchmark{}
@@ -130,8 +132,11 @@ func setupStreamingGrpc() {
 func setupUdp() {
 	u.p = benchmark.GetOpenTcpPort()
 
+	timerDuration := 50 * time.Millisecond
+	u.t = time.NewTimer(timerDuration) // max time we'll wait for a udp packet
+
 	u.wg = &sync.WaitGroup{}
-	u.q = benchmark.NewWaitingQueue(u.wg)
+	u.q = benchmark.NewTimeoutQueue(u.wg, u.t, &timerDuration)
 
 	u.l = listeners.NewUdpListener(u.p)
 	go u.l.StartAccepting(u.q)
@@ -146,8 +151,12 @@ func setupUdp() {
 		panic(err)
 	}
 
-	u.raddr = raddr
-	u.laddr = laddr
+	conn, err := net.DialUDP("udp", laddr, raddr)
+	if err != nil {
+		panic(err)
+	}
+
+	u.conn = conn
 }
 
 func setupUnaryGrpc() {
@@ -181,4 +190,27 @@ func setupWebsocket() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+// Open with some minimal retry
+func openTcpConn(port int) net.Conn {
+	var err error
+
+	for i := 0; i < 5; i++ {
+		conn, err := net.Dial("tcp", fmt.Sprintf("127.0.0.1:%d", port))
+
+		if err != nil {
+			if strings.Contains(err.Error(), "getsockopt: connection refused") {
+				fmt.Println("Retrying conn")
+				time.Sleep(100 * time.Millisecond)
+				continue
+			}
+
+			panic(err)
+		}
+
+		return conn
+	}
+
+	panic(err)
 }

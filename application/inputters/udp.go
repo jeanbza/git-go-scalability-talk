@@ -8,7 +8,7 @@ import (
 )
 
 type UdpListener struct {
-	port int
+	port     int
 }
 
 func NewUdpListener(port int) *UdpListener {
@@ -18,21 +18,21 @@ func NewUdpListener(port int) *UdpListener {
 func (l *UdpListener) StartAccepting(q queues.Queue) {
 	fmt.Printf("Starting UDP listening on port %d\n", l.port)
 
-	ServerAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf(":%d", l.port))
+	addr, err := net.ResolveUDPAddr("udp", fmt.Sprintf(":%d", l.port))
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	ServerConn, err := net.ListenUDP("udp", ServerAddr)
+	conn, err := net.ListenUDP("udp", addr)
 	if err != nil {
 		fmt.Println(err)
 	}
-	defer ServerConn.Close()
+	defer conn.Close()
 
-	buf := make([]byte, 10000)
+	buf := make([]byte, 65536)
 
 	for {
-		n, _, err := ServerConn.ReadFromUDP(buf)
+		n, _, err := conn.ReadFromUDP(buf)
 		if err != nil {
 			fmt.Println("Error: ", err)
 		}

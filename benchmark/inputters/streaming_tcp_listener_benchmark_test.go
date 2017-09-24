@@ -1,12 +1,9 @@
 package benchmark
 
 import (
-	"fmt"
 	"github.com/jadekler/git-go-scalability-talk/benchmark"
 	"net"
-	"strings"
 	"testing"
-	"time"
 )
 
 func BenchmarkStreamingTcpListener(b *testing.B) {
@@ -27,29 +24,6 @@ func BenchmarkStreamingTcpListenerParallel(b *testing.B) {
 	}
 
 	t.wg.Wait()
-}
-
-// Open with some minimal retry
-func openTcpConn(port int) net.Conn {
-	var err error
-
-	for i := 0; i < 5; i++ {
-		conn, err := net.Dial("tcp", fmt.Sprintf("127.0.0.1:%d", port))
-
-		if err != nil {
-			if strings.Contains(err.Error(), "getsockopt: connection refused") {
-				fmt.Println("Retrying conn")
-				time.Sleep(100 * time.Millisecond)
-				continue
-			}
-
-			panic(err)
-		}
-
-		return conn
-	}
-
-	panic(err)
 }
 
 func streamTcpItem(c net.Conn) {
