@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-func BenchmarkGrpcListener(b *testing.B) {
+func BenchmarkStreamingGrpcListener(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		sg.wg.Add(1)
 
@@ -22,7 +22,7 @@ func BenchmarkGrpcListener(b *testing.B) {
 	sg.wg.Wait()
 }
 
-func BenchmarkGrpcListenerParallel(b *testing.B) {
+func BenchmarkStreamingGrpcListenerParallel(b *testing.B) {
 	b.RunParallel(func(pb *testing.PB) {
 		conn, err := grpc.Dial(fmt.Sprintf("localhost:%d", sg.p), grpc.WithInsecure())
 		if err != nil {
