@@ -6,12 +6,13 @@ import (
 	"github.com/jadekler/git-go-scalability-talk/benchmark"
 	"net/http"
 	"testing"
+	"strings"
+	"sync"
 )
 
 func BenchmarkUnaryHttpListener(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		h.wg.Add(1)
-		post(h.p)
+		post(h.p, h.wg)
 	}
 
 	h.wg.Wait()
@@ -20,15 +21,24 @@ func BenchmarkUnaryHttpListener(b *testing.B) {
 func BenchmarkUnaryHttpListenerParallel(b *testing.B) {
     b.RunParallel(func(pb *testing.PB) {
         for pb.Next() {
-            h.wg.Add(1)
-            post(h.p)
+            post(h.p, h.wg)
         }
     })
 
 	h.wg.Wait()
 }
 
-func post(port int) {
+func post(port int, wg *sync.WaitGroup) {
+	wg.Add(1)
+
 	body := bytes.NewBufferString(benchmark.SMALL_MESSAGE)
-	http.Post(fmt.Sprintf("http://localhost:%d", port), "application/json", body)
+	_, err := http.Post(fmt.Sprintf("http://localhost:%d", port), "application/json", body)
+	if err != nil {
+		if strings.Contains(err.Error(), "read: connection reset by peer") {
+			// server is closing connection when we try to talk to it; bummer about doing this in parallel at high speeds
+			wg.Done() // that message never got sent, so decrement wg
+			return
+		}
+		panic(err)
+	}
 }

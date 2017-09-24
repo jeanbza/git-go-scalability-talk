@@ -8,20 +8,20 @@ import (
 
 func BenchmarkStreamingUdpListener(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		streamUdpRequest(u.conn)
+		streamUdpRequest(su.conn)
 	}
 
-	<- u.t.C
+	<- su.t.C
 }
 
 func BenchmarkStreamingUdpListenerParallel(b *testing.B) {
     b.RunParallel(func(pb *testing.PB) {
         for pb.Next() {
-            streamUdpRequest(u.conn)
+            streamUdpRequest(su.conn)
         }
     })
 
-	<- u.t.C
+	<- su.t.C
 }
 
 func streamUdpRequest(conn net.Conn) {

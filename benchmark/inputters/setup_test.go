@@ -47,15 +47,27 @@ type streamingGrpcListenerBenchmark struct {
 	s  model.GrpcStreamingInputterService_MakeRequestClient
 }
 
-var u udpListenerBenchmark = udpListenerBenchmark{}
+var su streamingUdpListenerBenchmark = streamingUdpListenerBenchmark{}
 
-type udpListenerBenchmark struct {
+type streamingUdpListenerBenchmark struct {
 	l    *listeners.UdpListener
 	wg   *sync.WaitGroup
 	t    *time.Timer
 	q    queues.Queue
 	p    int
 	conn *net.UDPConn
+}
+
+var uu unaryUdpListenerBenchmark = unaryUdpListenerBenchmark{}
+
+type unaryUdpListenerBenchmark struct {
+	l     *listeners.UdpListener
+	wg    *sync.WaitGroup
+	t     *time.Timer
+	q     queues.Queue
+	p     int
+	laddr *net.UDPAddr
+	raddr *net.UDPAddr
 }
 
 var ug unaryGrpcListenerBenchmark = unaryGrpcListenerBenchmark{}
@@ -84,7 +96,8 @@ func TestMain(m *testing.M) {
 	setupHttp()
 	setupTcp()
 	setupStreamingGrpc()
-	setupUdp()
+	setupStreamingUdp()
+	setupUnaryUdp()
 	setupUnaryGrpc()
 	setupWebsocket()
 
@@ -129,19 +142,19 @@ func setupStreamingGrpc() {
 	sg.s = stream
 }
 
-func setupUdp() {
-	u.p = benchmark.GetOpenTcpPort()
+func setupStreamingUdp() {
+	su.p = benchmark.GetOpenTcpPort()
 
 	timerDuration := 50 * time.Millisecond
-	u.t = time.NewTimer(timerDuration) // max time we'll wait for a udp packet
+	su.t = time.NewTimer(timerDuration) // max time we'll wait for a udp packet
 
-	u.wg = &sync.WaitGroup{}
-	u.q = benchmark.NewTimeoutQueue(u.wg, u.t, &timerDuration)
+	su.wg = &sync.WaitGroup{}
+	su.q = benchmark.NewTimeoutQueue(su.wg, su.t, &timerDuration)
 
-	u.l = listeners.NewUdpListener(u.p)
-	go u.l.StartAccepting(u.q)
+	su.l = listeners.NewUdpListener(su.p)
+	go su.l.StartAccepting(su.q)
 
-	raddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("localhost:%d", u.p))
+	raddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("localhost:%d", su.p))
 	if err != nil {
 		panic(err)
 	}
@@ -156,7 +169,33 @@ func setupUdp() {
 		panic(err)
 	}
 
-	u.conn = conn
+	su.conn = conn
+}
+
+func setupUnaryUdp() {
+	uu.p = benchmark.GetOpenTcpPort()
+
+	timerDuration := 50 * time.Millisecond
+	uu.t = time.NewTimer(timerDuration) // max time we'll wait for a udp packet
+
+	uu.wg = &sync.WaitGroup{}
+	uu.q = benchmark.NewTimeoutQueue(uu.wg, uu.t, &timerDuration)
+
+	uu.l = listeners.NewUdpListener(uu.p)
+	go uu.l.StartAccepting(uu.q)
+
+	raddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("localhost:%d", uu.p))
+	if err != nil {
+		panic(err)
+	}
+
+	laddr, err := net.ResolveUDPAddr("udp", "localhost:0")
+	if err != nil {
+		panic(err)
+	}
+
+	uu.raddr = raddr
+	uu.laddr = laddr
 }
 
 func setupUnaryGrpc() {

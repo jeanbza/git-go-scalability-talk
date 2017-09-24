@@ -24,7 +24,7 @@ func (l *HttpListener) StartAccepting(q queues.Queue) {
 	m.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		body, err := ioutil.ReadAll(r.Body)
 		if err != nil {
-			log.Fatal(err)
+			panic(err)
 		}
 		q.Enqueue(body)
 	})
