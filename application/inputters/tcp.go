@@ -31,7 +31,7 @@ func (l *TcpListener) StartAccepting(q queues.Queue) {
 			panic(err)
 		}
 
-		go readFromConn(conn, q)
+		go readFromConn(conn, q) // incl process buffer manually, retry logic, etc
 	}
 }
 
