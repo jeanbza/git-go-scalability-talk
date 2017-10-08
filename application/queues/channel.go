@@ -11,7 +11,12 @@ func NewChannelQueue() *ChannelQueue {
 }
 
 func (q *ChannelQueue) Enqueue(data []byte) {
-	q.c <- data
+	select {
+	case q.c <- data:
+	default:
+		// Queue was full! Data dropped
+		// metrics.Record("dropped_messages", 1)
+	}
 }
 
 func (q *ChannelQueue) Dequeue() ([]byte, bool) {
@@ -22,3 +27,5 @@ func (q *ChannelQueue) Dequeue() ([]byte, bool) {
 		return nil, false
 	}
 }
+
+
